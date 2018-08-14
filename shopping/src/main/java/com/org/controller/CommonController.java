@@ -98,4 +98,17 @@ public class CommonController {
 		log.info("dashboard page redirection..");
 		return "dashboard";
 	}
+	
+	/**
+	 * 
+	 * users profile page redirection...
+	 * @return
+	 */
+	@RequestMapping(value="/users",method=RequestMethod.GET)
+	public String users() {
+		log.info("users profile page redirection...");
+		return "users";
+	}
+	
+	
 }

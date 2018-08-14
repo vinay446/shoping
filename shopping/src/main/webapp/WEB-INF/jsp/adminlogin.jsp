@@ -37,7 +37,7 @@ body, html {
 	height: 100%;
 	background-repeat: no-repeat;
 	background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
-}
+ } 
 
 .card-container.card {
 	max-width: 350px;
@@ -275,7 +275,7 @@ body, html {
 						value="remember-me" /> Remember me
 					</label>
 				</div>
-				<button class="btn btn-lg btn-primary btn-block btn-signin"
+				<button id="signin" class="btn btn-lg btn-primary btn-block btn-signin"
 					type="submit">Sign in</button>
 				<table align="center">
 					<tr>
@@ -284,6 +284,8 @@ body, html {
 					</tr>
 
 				</table>
+				<script>
+				</script>
 			</form>
 			<!-- /form -->
 			<a href="#" class="forgot-password"> Forgot the password? </a>

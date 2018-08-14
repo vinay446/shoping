@@ -91,9 +91,11 @@ public class LoginController {
 	 * @return
 	 */
 	@RequestMapping(value = "/adminlogout", method = RequestMethod.GET)
-	public String adminlogout(@RequestParam("msg") String msg, @RequestParam("req") String req, HttpSession session) {
+	public String adminlogout(@RequestParam("msg") String msg, @RequestParam("req") String req, HttpSession session,ModelMap model) {
 		log.info("logout request");
 		session.invalidate();
-		return "redirect:/admin?msg="+msg+"&req="+req;
+		model.addAttribute("msg",msg);
+		model.addAttribute("req",req);
+		return "adminlogin";
 	}
 }
