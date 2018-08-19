@@ -6,27 +6,47 @@ import com.org.model.User;
 
 public interface UserService {
 
-	/**
-	 * Retrevs User Obj by emailID
-	 * @param emailID
-	 * @return User Obj
-	 */
-	User findById(String emailID);
-	
-	/**
-	 * Saves given obj to database
-	 * @param user
-	 */
-	void SaveUser(User user);
-	
-	/**
-	 * Deletes User Obj for given emailID
-	 * @param emailID
-	 */
-	void deleteUser(String emailID);
-	
-	/**
-	 * Retirves all Users
-	 */
-	List<User> findallUsers();
+    /**
+     * Retrevs User Obj by emailID
+     *
+     * @param emailID
+     * @return User Obj
+     */
+    User findById(String emailID);
+
+    /**
+     * Saves given obj to database
+     *
+     * @param user
+     */
+    void SaveUser(User user);
+
+    /**
+     * Deletes User Obj for given emailID
+     *
+     * @param emailID
+     */
+    void deleteUser(String emailID);
+
+    /**
+     * retrieves all user objs
+     *
+     * @return
+     */
+    List<User> findallUsers();
+
+    /**
+     * update use
+     *
+     * @param user
+     */
+    public void updateUser(User user);
+
+    /**
+     *true if emailID not exists else returns false
+     * @param emailID
+     * @return 
+     */
+    public boolean isUseremailIDUnique(String emailID);
+
 }

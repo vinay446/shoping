@@ -11,152 +11,163 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="userID")
-	int id;
-	
-	@Column(name="firstname")
-	String firstname;
-	
-	@Column(name="lastname")
-	String lastname;
-	
-	@Id
-	@Column(name="emailID")
-	String emailID;
-	
-	@Column(name="phone")
-	String phone;
-	
-	@Column(name="password")
-	String password;
-	
-	@Column(name="roleID")
-	String roleID;
-	
-	@Column(name="creationtime")
-	long creationtime;
-	
-	@Column(name="expiretime")
-	long expiretime;
-	
-	@Column(name="isactive")
-	String isactive;
-	
-	@Column(name="lastlogin")
-	long lastlogin;
-	
-	@Column(name="lastloginip")
-	String lastloginip;
-	
-	@Column(name="lastlogindevice")
-	String lastlogindevice;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userID")
+    int id;
 
-	public int getId() {
-		return id;
-	}
+    @Column(name = "firstname")
+    String firstname;
 
-	public String getFirstname() {
-		return firstname;
-	}
+    @Column(name = "lastname")
+    String lastname;
 
-	public String getLastname() {
-		return lastname;
-	}
+    @Id
+    @Column(name = "emailID")
+    String emailID;
 
-	public String getEmailID() {
-		return emailID;
-	}
+    @Column(name = "phone")
+    String phone;
 
-	public String getPhone() {
-		return phone;
-	}
+    @Column(name = "password")
+    String password;
 
-	public String getPassword() {
-		return password;
-	}
+    @Column(name = "roleID")
+    String roleID;
 
-	public String getRoleID() {
-		return roleID;
-	}
+    @Column(name = "creationtime")
+    long creationtime;
 
-	public long getCreationtime() {
-		return creationtime;
-	}
+    @Column(name = "expiretime")
+    long expiretime;
 
-	public long getExpiretime() {
-		return expiretime;
-	}
+    @Column(name = "isactive")
+    String isactive;
 
-	public String getIsactive() {
-		return isactive;
-	}
+    @Column(name = "lastlogin")
+    long lastlogin;
 
-	public long getLastlogin() {
-		return lastlogin;
-	}
+    @Column(name = "lastloginip")
+    String lastloginip;
 
-	public String getLastloginip() {
-		return lastloginip;
-	}
+    @Column(name = "address")
+    String address;
 
-	public String getLastlogindevice() {
-		return lastlogindevice;
-	}
+    @Column(name = "imageid")
+    String imageid;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+    public String getImageid() {
+        return imageid;
+    }
 
-	public void setEmailID(String emailID) {
-		this.emailID = emailID;
-	}
+    public void setImageid(String imageid) {
+        this.imageid = imageid;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getFirstname() {
+        return firstname;
+    }
 
-	public void setRoleID(String roleID) {
-		this.roleID = roleID;
-	}
+    public String getLastname() {
+        return lastname;
+    }
 
-	public void setCreationtime(long creationtime) {
-		this.creationtime = creationtime;
-	}
+    public String getEmailID() {
+        return emailID;
+    }
 
-	public void setExpiretime(long expiretime) {
-		this.expiretime = expiretime;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setIsactive(String isactive) {
-		this.isactive = isactive;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setLastlogin(long lastlogin) {
-		this.lastlogin = lastlogin;
-	}
+    public String getRoleID() {
+        return roleID;
+    }
 
-	public void setLastloginip(String lastloginip) {
-		this.lastloginip = lastloginip;
-	}
+    public long getCreationtime() {
+        return creationtime;
+    }
 
-	public void setLastlogindevice(String lastlogindevice) {
-		this.lastlogindevice = lastlogindevice;
-	}
-		
+    public long getExpiretime() {
+        return expiretime;
+    }
+
+    public String getIsactive() {
+        return isactive;
+    }
+
+    public long getLastlogin() {
+        return lastlogin;
+    }
+
+    public String getLastloginip() {
+        return lastloginip;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public void setEmailID(String emailID) {
+        this.emailID = emailID;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoleID(String roleID) {
+        this.roleID = roleID;
+    }
+
+    public void setCreationtime(long creationtime) {
+        this.creationtime = creationtime;
+    }
+
+    public void setExpiretime(long expiretime) {
+        this.expiretime = expiretime;
+    }
+
+    public void setIsactive(String isactive) {
+        this.isactive = isactive;
+    }
+
+    public void setLastlogin(long lastlogin) {
+        this.lastlogin = lastlogin;
+    }
+
+    public void setLastloginip(String lastloginip) {
+        this.lastloginip = lastloginip;
+    }
+
 }
