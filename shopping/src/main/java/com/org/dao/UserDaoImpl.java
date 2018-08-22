@@ -13,32 +13,34 @@ import com.org.model.User;
 @Repository("UserDao")
 public class UserDaoImpl implements UserDao {
 
-	@Autowired
-	private SessionFactory factory;
-	
-	protected Session getSession() {
-		return factory.getCurrentSession();
-	}
-	
-	public User findById(String emailID) {			
-		return (User) getSession().get(User.class,emailID);
-	}
+    @Autowired
+    private SessionFactory factory;
 
-	public void SaveUser(User user) {
-		getSession().saveOrUpdate(user);
-		
-	}
+    protected Session getSession() {
+        return factory.getCurrentSession();
+    }
 
-	public void deleteUser(String emailID) {
-      	Query query = getSession().createSQLQuery("delete from User where emailID = :emailID");
-      	query.setString("emailID", emailID);
-      	query.executeUpdate();
-	}
+    @Override
+    public User findById(String emailID) {
+        return (User) getSession().get(User.class, emailID);
+    }
 
-	public List<User> findallUsers() {        
-		return (List<User>) getSession().createCriteria(User.class).list();
-	}
-	
-	
+    @Override
+    public void SaveUser(User user) {
+        getSession().saveOrUpdate(user);
+
+    }
+
+    @Override
+    public void deleteUser(String emailID) {
+        Query query = getSession().createSQLQuery("delete from User where emailID = :emailID");
+        query.setString("emailID", emailID);
+        query.executeUpdate();
+    }
+
+    @Override
+    public List<User> findallUsers() {
+        return (List<User>) getSession().createCriteria(User.class).list();
+    }
 
 }
