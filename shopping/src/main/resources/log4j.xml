@@ -12,7 +12,7 @@
 	</appender>
 	<!-- Info Log File Appender -->
 	<appender name="log" class="org.apache.log4j.FileAppender">
-		<param name="File" value="log.out" />
+		<param name="File" value="/home/glodeveloper/Desktop/log.out" />
 		<param name="immediateFlush" value="true" />
 		<param name="append" value="true" />
 		<layout class="org.apache.log4j.PatternLayout">

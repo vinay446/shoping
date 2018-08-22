@@ -178,12 +178,12 @@
 					<version>2.4</version>
 					<configuration>
 						<warSourceDirectory>src/main/webapp</warSourceDirectory>
-						<warName>shopping</warName>
+						<warName>AdminPannel</warName>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<finalName>shopping</finalName>
+		<finalName>AdminPannel</finalName>
 	</build>
 </project>

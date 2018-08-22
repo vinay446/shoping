@@ -49,8 +49,8 @@ public class UserController {
 
     /**
      * user profile edit page redirection
-     *
-     * @param emailID
+     *     
+     * @param id
      * @param model
      * @return
      */
@@ -195,7 +195,7 @@ public class UserController {
         if (userid == 0) {//sysadmin
             //disabled (uneditable) fields for sysadmin user
             if (permission.equals("disabledfields")) {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < 9; i++) {
                     //all fields editable permission disabled
                     permissions.add(0);
                 }

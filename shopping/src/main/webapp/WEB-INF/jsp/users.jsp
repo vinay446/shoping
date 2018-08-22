@@ -57,7 +57,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <center><div id="load" class="loader"></div></center>
-                            <c:if test="${method.equals('edit')}">
+                                <c:if test="${method.equals('edit')}">
                                 <div class="col-md-8">
                                     <div class="card">
                                         <div class="card-header" data-background-color="purple">
@@ -130,12 +130,12 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        <label class="control-label">Image</label>
-                                                        <input type="file" name="image"   class="btn btn-primary btn-round" ${disabledfield[8]==0?"disabled":""} />                                                    
+                                                        <label class="control-label">Image </label>
+                                                        <input type="file" name="image"  id="image" class="btn btn-primary btn-round" ${disabledfield[8]==0?"disabled":""} />                                                    
                                                     </div>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary btn-round pull-right">Update
-                                                    Profile</button>
+                                                <button type="submit"  class="btn btn-success btn-round pull-left">Update Profile</button>
+                                                <button type="button" class="btn btn-danger btn-round pull-right" onclick="location.href = '${pageContext.request.contextPath}/users'">Cancel</button>
                                                 <div class="clearfix"></div>
                                             </form>
                                         </div>
@@ -161,7 +161,7 @@
                                             <h4 class="title">Create new User Profile</h4>                                           
                                         </div>
                                         <div class="card-content">
-                                            <form method="POST" action="<c:url value="/createprofile"/>" enctype="multipart/form-data">
+                                            <form method="POST" id="createform" action="<c:url value="/createprofile"/>" enctype="multipart/form-data">
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">
@@ -242,10 +242,10 @@
                                                         <input type="file" name="image"   class="btn btn-primary btn-round" ${disabledfield[8]==0?"disabled":""} />                                                    
                                                     </div>
                                                 </div>
-                                                <button type="submit" class="btn btn-success btn-round pull-left">Create Profile</button>
+                                                    <button type="button" class="btn btn-success btn-round pull-left" onclick="createuser()">Create Profile</button>
                                                 <button type="button" class="btn btn-danger btn-round pull-right" onclick="location.href = '${pageContext.request.contextPath}/users'">Cancel</button>
                                                 <div class="clearfix"></div>
-                                            </form>
+                                            </form>                                                
                                         </div>
                                     </div>
                                 </div> 
@@ -261,9 +261,9 @@
                                                 <h6 class="category text-gray">User ID: SYS ADMIN </h6>
                                                 <h4 class="card-title">Name :Vinay</h4>
                                                 <p class="card-content">Email: ${emailID}</p>
-                                                <a href="<c:url value="/edituser/0"/>"
-                                                   class="btn btn-primary btn-round">Edit</a>                                                
-                                                <a href="<c:url value="/create"/>" class="btn btn-primary btn-round">New</a>
+<!--                                                <a href="<c:url value="/edituser/0"/>"
+                                                   class="btn btn-primary btn-round">Edit</a>                                                -->
+                                                <a href="<c:url value="/create"/>" class="btn btn-primary btn-round">Create New</a>
                                             </div>
                                         </div>
                                     </div>
@@ -279,7 +279,7 @@
                                                 <h4 class="card-title">Name :${user.firstname} ${user.lastname}</h4>
                                                 <p class="card-content">Email: ${emailID}</p>
                                                 <a href="<c:url value="/edituser/${user.id}"/>"  class="btn btn-primary btn-round">Edit</a>                                                
-                                                <a href="<c:url value="/create"/>"   class="btn btn-primary btn-round">New</a>
+                                                <a href="<c:url value="/create"/>"   class="btn btn-primary btn-round">Create New</a>
                                                 <a href="<c:url value="/delete/${user.id}"/>"   class="btn btn-primary btn-round">Delete</a>
                                             </div>
                                         </div>
@@ -292,25 +292,28 @@
                 <%@include file="footer.jsp"%>
             </div>
         </div>
+        <!--   Core JS Files   -->
+        <script src="<c:url value="/resources/js/jquery-3.2.1.min.js"/>" type="text/javascript"></script>
+        <script src="<c:url value="/resources/js/bootstrap.min.js"/>" type="text/javascript"></script>
+        <script src="<c:url value="/resources/js/material.min.js"/>" type="text/javascript"></script>
+        <!--  Charts Plugin -->
+        <script src="<c:url value="/resources/js/chartist.min.js"/>"></script>
+        <!--  Dynamic Elements plugin -->
+        <script src="<c:url value="/resources/js/arrive.min.js"/>"></script>
+        <!--  PerfectScrollbar Library -->
+        <script src="<c:url value="/resources/js/perfect-scrollbar.jquery.min.js"/>"></script>
+        <!--  Notifications Plugin    -->
+        <script src="<c:url value="/resources/js/bootstrap-notify.js"/>"></script>
+        <!-- Material Dashboard javascript methods -->
+        <script src="<c:url value="/resources/js/material-dashboard.js?v=1.2.0"/>"></script>
+        <script>
+                                                    $(document).ready(function () {
+                                                        document.getElementById("load").style.display = 'none';
+                                                    });
+                                                    function createuser(){
+                                                        alert("create user");
+                                                        
+                                                    }
+        </script>
     </body>
-    <!--   Core JS Files   -->
-    <script src="<c:url value="/resources/js/jquery-3.2.1.min.js"/>"
-    type="text/javascript"></script>
-    <script src="<c:url value="/resources/js/bootstrap.min.js"/>"
-    type="text/javascript"></script>
-    <script src="<c:url value="/resources/js/material.min.js"/>"
-    type="text/javascript"></script>
-    <!--  Charts Plugin -->
-    <script src="<c:url value="/resources/js/chartist.min.js"/>"></script>
-    <!--  Dynamic Elements plugin -->
-    <script src="<c:url value="/resources/js/arrive.min.js"/>"></script>
-    <!--  PerfectScrollbar Library -->
-    <script
-    src="<c:url value="/resources/js/perfect-scrollbar.jquery.min.js"/>"></script>
-    <!--  Notifications Plugin    -->
-    <script src="<c:url value="/resources/js/bootstrap-notify.js"/>"></script>
-    <!-- Material Dashboard javascript methods -->
-    <script
-    src="<c:url value="/resources/js/material-dashboard.js?v=1.2.0"/>"></script>
-
 </html>
