@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="span12">
                     <div class="hero-unit center">
-                        <h1><font face="Tahoma" color="red">Internal Server Error </font></h1>
+                        <h1><font face="Tahoma" color="red">500 Error </font></h1>
                         <h1>Application Experienced Internal Server Error </h1>
                         <center><img src="<c:url value="/resources/images/500.jpg"/> "/></center>
                         <p>The Page you are looking experienced some Error, either contact your admin or try again. Use your browsers <b>Back</b> button to navigate to the page you have prevously come from</p>

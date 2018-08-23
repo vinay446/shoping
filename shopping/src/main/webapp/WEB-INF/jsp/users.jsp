@@ -46,6 +46,7 @@
             href='http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons'
             rel='stylesheet' type='text/css'>
         <link href="<c:url value="/resources/css/style.css"/>" rel="stylesheet" type="text/css" />
+        <script src="<c:url value="/resources/js/util.js"/>"></script>
     </head>
 
     <body>
@@ -155,7 +156,7 @@
                                 </div>                                
                             </c:if>
                             <c:if test="${method.equals('create')}">
-                                <div class="col-md-8">
+                                <div class="col-md-8" id="creatediv">
                                     <div class="card">
                                         <div class="card-header" data-background-color="purple">
                                             <h4 class="title">Create new User Profile</h4>                                           
@@ -166,19 +167,19 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">User ID </label> <input
-                                                                type="text" name="userID" value="${userid}" class="form-control" disabled>
+                                                                type="text" name="userID" id="userID" value="${userid}" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Email address</label> <input
-                                                                type="email" name="emailID"  class="form-control"  >
+                                                                type="email" name="emailID" id="emailID" class="form-control" required >
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Phone number</label> <input
-                                                                type="text" name="phone"  class="form-control" >
+                                                                type="text" name="phone" id="phone" class="form-control" >
                                                         </div>
                                                     </div>
                                                 </div>
@@ -186,13 +187,13 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Fist Name</label> <input
-                                                                type="text" name="firstname"  class="form-control" >
+                                                                type="text" name="firstname" id="firstname" class="form-control" >
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Last Name</label> <input
-                                                                type="text" name="lastname"  class="form-control">
+                                                                type="text" name="lastname" id="lastname" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -200,7 +201,7 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Adress</label> <input
-                                                                type="text"  name="address"  class="form-control" >
+                                                                type="text"  name="address" id="address" class="form-control" >
                                                         </div>
                                                     </div>
                                                 </div>									
@@ -208,7 +209,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">                                                           
                                                             <label class="control-label">Role ID</label>
-                                                            <select class="form-control"  name="roleID" >
+                                                            <select class="form-control" id="roleID" name="roleID" >
                                                                 <option  value="user">USER</option>
                                                                 <option  value="admin">ADMIN</option>
                                                             </select>                                                            
@@ -217,7 +218,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">                                                           
                                                             <label class="control-label">IS ACTIVE</label>
-                                                            <select class="form-control" name="isactive" >                                                                   
+                                                            <select class="form-control" id="isactive" name="isactive" >                                                                   
                                                                 <option value="no">NO</option>
                                                                 <option value="yes">YES</option>
                                                             </select>
@@ -226,7 +227,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Password</label> <input
-                                                                type="password" name="password"  class="form-control">
+                                                                type="password" name="password" id="password" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -234,15 +235,15 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group label-floating">
                                                             <label class="control-label">Confirm Password</label> <input
-                                                                type="password" name="cpassword"  class="form-control">
+                                                                type="password" name="cpassword" id="cpassword" class="form-control">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label class="control-label">Image</label>
-                                                        <input type="file" name="image"   class="btn btn-primary btn-round" ${disabledfield[8]==0?"disabled":""} />                                                    
+                                                        <input type="file" name="image" id="image"  class="btn btn-primary btn-round" ${disabledfield[8]==0?"disabled":""} />                                                    
                                                     </div>
                                                 </div>
-                                                    <button type="button" class="btn btn-success btn-round pull-left" onclick="createuser()">Create Profile</button>
+                                                <button type="button" class="btn btn-success btn-round pull-left" onclick="createuser()">Create Profile</button>
                                                 <button type="button" class="btn btn-danger btn-round pull-right" onclick="location.href = '${pageContext.request.contextPath}/users'">Cancel</button>
                                                 <div class="clearfix"></div>
                                             </form>                                                
@@ -250,7 +251,7 @@
                                     </div>
                                 </div> 
                             </c:if>
-                            <c:if test="${method.equals('view')}">
+                            <c:if test="${method.equals('view')}">                               
                                 <c:if test="${username.equalsIgnoreCase('sysadmin')}">
                                     <div class="col-md-4">
                                         <div class="card card-profile">
@@ -263,7 +264,7 @@
                                                 <p class="card-content">Email: ${emailID}</p>
 <!--                                                <a href="<c:url value="/edituser/0"/>"
                                                    class="btn btn-primary btn-round">Edit</a>                                                -->
-                                                <a href="<c:url value="/create"/>" class="btn btn-primary btn-round">Create New</a>
+                                                <a href="<c:url value="/create"/>" class="btn btn-primary btn-round">Create</a>
                                             </div>
                                         </div>
                                     </div>
@@ -277,9 +278,9 @@
                                             <div class="content">
                                                 <h6 class="category text-gray">User ID: ${user.id} </h6>
                                                 <h4 class="card-title">Name :${user.firstname} ${user.lastname}</h4>
-                                                <p class="card-content">Email: ${emailID}</p>
+                                                <p class="card-content">Email: ${user.emailID}</p>
                                                 <a href="<c:url value="/edituser/${user.id}"/>"  class="btn btn-primary btn-round">Edit</a>                                                
-                                                <a href="<c:url value="/create"/>"   class="btn btn-primary btn-round">Create New</a>
+                                                <a href="<c:url value="/create"/>"  class="btn btn-primary btn-round">Create</a>
                                                 <a href="<c:url value="/delete/${user.id}"/>"   class="btn btn-primary btn-round">Delete</a>
                                             </div>
                                         </div>
@@ -309,11 +310,26 @@
         <script>
                                                     $(document).ready(function () {
                                                         document.getElementById("load").style.display = 'none';
+                                                        var message = "${message}";
+                                                        var type = "${type}";
+                                                        if (message !== null && message !== "" && message !== " " && message !== "null") {
+                                                            if (type.toLowerCase() === "error") {
+                                                                displaynotification("top", "right", message, "danger");
+                                                            } else if (type.toLowerCase() === "info") {
+                                                                displaynotification("bottom", "right", message, "info");
+                                                            } else {
+                                                                displaynotification("bottom", "right", message, "success");
+                                                            }
+                                                        }
                                                     });
-                                                    function createuser(){
-                                                        alert("create user");
-                                                        
+                                                    function createuser() {
+                                                        if (validatecreateuser()) {
+                                                            document.getElementById("load").style.display = 'block';
+                                                            document.getElementById("creatediv").style.display = 'none';
+                                                            $("#createform").submit();
+                                                        }
                                                     }
+
         </script>
     </body>
 </html>

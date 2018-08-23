@@ -49,7 +49,7 @@ public class UserController {
 
     /**
      * user profile edit page redirection
-     *     
+     *
      * @param id
      * @param model
      * @return
@@ -123,7 +123,7 @@ public class UserController {
     public String createuserpage(ModelMap model) {
         log.info("Create new user page redirection...");
         model.addAttribute("method", "create");
-        model.addAttribute("userid", "temp");
+        model.addAttribute("userid", "auto generate");
         return "users";
     }
 
@@ -151,19 +151,27 @@ public class UserController {
         model.addAttribute("method", "view");
         if (!service.isUseremailIDUnique(emailID)) {
             log.error("EmailID already Exists");
-            model.addAttribute("message", "Error, EmailID already exists");
+            model.addAttribute("type", "error");
+            model.addAttribute("message", "Unable to create User. EmailID already exists");
             return "users";
         }
-        String imageid = image == null ? "sysadmin.png" : image.getOriginalFilename();
-        System.out.println("image name " + imageid);
-        int expiredays = 365;
-        // try {
-        expiredays = Integer.parseInt(util.getProperites("userexpiredays"));
-        System.out.println("expired days " + expiredays);
-        // } catch (NumberFormatException e) {
-        //   e.printStackTrace();
-        // log.error("Number format exception raised in settting exipre days taking default value 365 days");
-        // }
+        String sysadminemail = util.getProperites("sysadmin.username");
+        if (emailID.equalsIgnoreCase(sysadminemail)) {
+            log.error("Incorrect emailID...");
+            model.addAttribute("type", "error");
+            model.addAttribute("message", "Unable to create user. Incorrect emailID given");
+            return "users";
+        }
+        String imageid = image.isEmpty() ? "sysadmin.png" : image.getOriginalFilename();
+        int expiredays = 90;
+        try {
+            expiredays = Integer.parseInt(util.getProperites("profileexpiredays"));
+        } catch (java.lang.NumberFormatException e) {
+            e.printStackTrace();
+            model.addAttribute("type", "info");
+            model.addAttribute("message", "Application properties file is not configured properly. using default values, see log file for more...");
+            log.fatal("Application properties file is not configured properly. using default value..." + e.getMessage());
+        }
         User user = new User();
         user.setAddress(address);
         user.setCreationtime(DateUtil.getEpoch());
@@ -178,6 +186,10 @@ public class UserController {
         user.setPhone(phone);
         user.setRoleID(roleID);
         user.setPassword(password);
+        service.SaveUser(user);
+        model.addAttribute("type", "success");
+        model.addAttribute("users", service.findallUsers());
+        model.addAttribute("message", "Profile " + firstname + " created successfully..");
         return "users";
     }
 

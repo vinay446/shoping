@@ -101,7 +101,8 @@ public class DateUtil {
 	public static long getmidnightepoch(long epoch) {
 		try {
 			SimpleDateFormat sf = new SimpleDateFormat("dd-MMMM-yyyy");
-			return sf.parse(new Date(epoch*1000).toString()).getTime()/1000;
+                        String currentdate = sf.format(getDateObj());                        
+			return sf.parse(currentdate).getTime()/1000;
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.fatal("Error during epoch convertion "+e.getMessage());
@@ -110,6 +111,14 @@ public class DateUtil {
 	}
 	
 	public static void main(String []args) {
-		
+		System.out.println("testing...");
+                System.out.println("get date obj "+getDateObj());
+                System.out.println("getCurrentDate "+getCurrentDate());
+                System.out.println("getCurrentDate "+getCurrentDate("dd-MMMM-yyyy"));
+                System.out.println("getEpoch "+getEpoch());
+                System.out.println("getepoch "+getEpoch("9-9-99999999999999 09:09:09", "dd-MM-yyyy HH:mm:ss"));
+                System.out.println("epochtodate "+epochToDate(315507342944349L));
+                System.out.println("epocjtodate "+epochToDate(15555, "dd-MMMM-yyyy hh:mm:ss a"));
+                System.out.println("getmidnightepoch "+getmidnightepoch(0454654654));
 	}
 }
