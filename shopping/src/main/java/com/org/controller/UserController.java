@@ -3,7 +3,9 @@ package com.org.controller;
 import com.org.model.User;
 import com.org.service.UserService;
 import com.org.util.DateUtil;
+import com.org.util.SendMail;
 import com.org.util.util;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
@@ -27,9 +29,10 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class UserController {
 
     private static Logger log = Logger.getLogger(UserController.class);
-
-    @Autowired
-    UserService service;
+    private static final String sysadminemailid = util.getProperites("sysadmin.username");
+    private static final String profileexpire =util.getProperites("profileexpiredays");
+    
+    @Autowired UserService service ;
 
     /**
      * users profile page redirection...
@@ -61,7 +64,6 @@ public class UserController {
         List<Integer> disabled = getpermissions(id, "disabledfields");
         if (id == 0) {//sysadmin
             log.info("loading sysadmin profile information...");
-            String sysadminemailid = util.getProperites("sysadmin.username");
             User user = new User();
             user.setId(0);
             user.setEmailID(sysadminemailid);
@@ -155,8 +157,7 @@ public class UserController {
             model.addAttribute("message", "Unable to create User. EmailID already exists");
             return "users";
         }
-        String sysadminemail = util.getProperites("sysadmin.username");
-        if (emailID.equalsIgnoreCase(sysadminemail)) {
+        if (emailID.equalsIgnoreCase(sysadminemailid)) {
             log.error("Incorrect emailID...");
             model.addAttribute("type", "error");
             model.addAttribute("message", "Unable to create user. Incorrect emailID given");
@@ -165,7 +166,7 @@ public class UserController {
         String imageid = image.isEmpty() ? "sysadmin.png" : image.getOriginalFilename();
         int expiredays = 90;
         try {
-            expiredays = Integer.parseInt(util.getProperites("profileexpiredays"));
+            expiredays = Integer.parseInt(profileexpire);
         } catch (java.lang.NumberFormatException e) {
             e.printStackTrace();
             model.addAttribute("type", "info");
@@ -190,6 +191,13 @@ public class UserController {
         model.addAttribute("type", "success");
         model.addAttribute("users", service.findallUsers());
         model.addAttribute("message", "Profile " + firstname + " created successfully..");
+        String verifycode = util.encryptString(emailID.trim());
+        String link = "localhost:8084/shopping/activateaccount/" + URLEncoder.encode(verifycode);
+        SendMail se = new SendMail(emailID, "welocme@glovision.co", "WELCOME", firstname, link);
+        se.start();
+        if(!image.equals("sysadmin.png")){
+            util.saveimageinfolder(image,"C:\\xampp\\htdocs\\images\\"+image.getOriginalFilename());
+        }
         return "users";
     }
 

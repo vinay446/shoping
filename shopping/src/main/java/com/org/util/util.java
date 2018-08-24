@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -28,6 +32,86 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class util {
 
     private static Logger log = Logger.getLogger(util.class);
+    private static final String key = util.getProperites("ssl.key");
+    private static final String initvector = util.getProperites("ssl.initvector");
+
+    /**
+     * Encrypt the given String into 126 bit SSL Encryption
+     *
+     *  * @author vinay
+     * @param req
+     * @return encrypted string, null if exception raises
+     */
+    public static String encryptString(String req) { 
+        return encrypt(key, initvector, req);
+    }
+
+    /**
+     * Decrypt the given String into 126 bit SSL Encryption
+     *
+     *  * @author vinay
+     * @param req
+     * @return encrypted string, null if exception raises
+     */
+    public static String decyptString(String req) {
+        return decrypt(key, initvector, req);
+
+    }
+
+    /**
+     * encryption
+     *
+     * @param key
+     * @param initVector
+     * @param value
+     *  * @author vinay
+     * @return
+     */
+    private static String encrypt(String key, String initVector, String value) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+
+            return Base64.encodeBase64String(encrypted);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * *
+     * decryption
+     *
+     * @param key
+     * @param initVector
+     * @param encrypted
+     *  * @author vinay
+     * @return
+     */
+    private static String decrypt(String key, String initVector, String encrypted) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+
+            byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
+
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
 
     /**
      * Loads application properties for object
@@ -37,7 +121,6 @@ public class util {
      */
     public static String getProperites(String key) {
         try {
-            log.debug("Loading application properties ...");
             ApplicationConfiguration conf = new ApplicationConfiguration();
             Properties prop = conf.getApplicationProperties("application.properties");
             return prop.getProperty(key);
@@ -67,28 +150,29 @@ public class util {
             }
         }
     }
-    
+
     /**
      * saves images to folder in server
+     *
      * @param image
      * @param filelocation
-     * @return 
+     * @return
      */
-    public static boolean saveimageinfolder(CommonsMultipartFile image,String filelocation){
-        try{
+    public static boolean saveimageinfolder(CommonsMultipartFile image, String filelocation) {
+        try {
             log.info("saving image in folder...");
             File file = new File(filelocation);
-            if(file.exists()){
+            if (file.exists()) {
                 file.delete();
             }
-            byte [] bytes = image.getBytes();
+            byte[] bytes = image.getBytes();
             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filelocation));
             out.write(bytes);
             out.flush();
             out.close();
             return true;
-        }catch(IOException e){
-            log.error("unable to save image in folder "+e.getMessage());
+        } catch (IOException e) {
+            log.error("unable to save image in folder " + e.getMessage());
             return false;
         }
     }
