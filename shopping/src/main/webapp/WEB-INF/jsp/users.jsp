@@ -259,12 +259,13 @@
                                                 <img class="img" src="http://localhost/images/sysadmin.png" />
                                             </div>
                                             <div class="content">
-                                                <h6 class="category text-gray">User ID: SYS ADMIN </h6>
-                                                <h4 class="card-title">Name :Vinay</h4>
+                                                <h6 class="category text-gray">User ID: 0 </h6>
+                                                <h4 class="card-title">Name :SYSADMIN</h4>
                                                 <p class="card-content">Email: ${emailID}</p>
-<!--                                                <a href="<c:url value="/edituser/0"/>"
-                                                   class="btn btn-primary btn-round">Edit</a>                                                -->
-                                                <a href="<c:url value="/create"/>" class="btn btn-primary btn-round">Create</a>
+                                                <p class="card-content">Phone: 0</p>
+                                                <p class="card-content">Address:0</p>
+                                                <p class="card-content">Role:0</p>
+                                                <p class="card-content">Is Active : YES</p>
                                             </div>
                                         </div>
                                     </div>
@@ -279,8 +280,11 @@
                                                 <h6 class="category text-gray">User ID: ${user.id} </h6>
                                                 <h4 class="card-title">Name :${user.firstname} ${user.lastname}</h4>
                                                 <p class="card-content">Email: ${user.emailID}</p>
-                                                <a href="<c:url value="/edituser/${user.id}"/>"  class="btn btn-primary btn-round">Edit</a>                                                
-                                                <a href="<c:url value="/create"/>"  class="btn btn-primary btn-round">Create</a>
+                                                <p class="card-content">Phone: ${user.phone}</p>
+                                                <p class="card-content">Address: ${user.address}</p>
+                                                <p class="card-content">Role: ${user.roleID}</p>
+                                                <p class="card-content">Is Active: ${user.isactive}</p>
+                                                <a href="<c:url value="/edituser/${user.id}"/>"  class="btn btn-primary btn-round">Edit</a>                                                                                               
                                                 <a href="<c:url value="/delete/${user.id}"/>"   class="btn btn-primary btn-round">Delete</a>
                                             </div>
                                         </div>

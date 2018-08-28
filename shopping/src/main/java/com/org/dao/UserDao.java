@@ -18,6 +18,12 @@ public interface UserDao {
 	 */
 	User findById(String emailID);
 	
+        /**
+         * Retreives User Obj by USERID
+         * @param userID
+         * @return 
+         */
+        User findById(int userID);
 	/**
 	 * Saves given obj to database
 	 * @param user

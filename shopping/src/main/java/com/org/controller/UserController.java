@@ -30,9 +30,10 @@ public class UserController {
 
     private static Logger log = Logger.getLogger(UserController.class);
     private static final String sysadminemailid = util.getProperites("sysadmin.username");
-    private static final String profileexpire =util.getProperites("profileexpiredays");
-    
-    @Autowired UserService service ;
+    private static final String profileexpire = util.getProperites("profileexpiredays");
+
+    @Autowired
+    UserService service;
 
     /**
      * users profile page redirection...
@@ -77,7 +78,8 @@ public class UserController {
             model.addAttribute("user", user);
         } else {
             log.info("loading " + id + " information...");
-
+            User user = service.findById(id);
+            model.addAttribute("user",user);
         }
         model.addAttribute("disabledfield", disabled);
         return "users";
@@ -192,13 +194,48 @@ public class UserController {
         model.addAttribute("users", service.findallUsers());
         model.addAttribute("message", "Profile " + firstname + " created successfully..");
         String verifycode = util.encryptString(emailID.trim());
-        String link = "localhost:8084/shopping/activateaccount/" + URLEncoder.encode(verifycode);
+        String link = "localhost:8084/shopping/activateaccount?emailID=" + emailID + "&code=" + URLEncoder.encode(verifycode);
         SendMail se = new SendMail(emailID, "welocme@glovision.co", "WELCOME", firstname, link);
         se.start();
-        if(!image.equals("sysadmin.png")){
-            util.saveimageinfolder(image,"C:\\xampp\\htdocs\\images\\"+image.getOriginalFilename());
+        if (!image.equals("sysadmin.png")) {
+            util.saveimageinfolder(image, "/var/www/html/images/" + image.getOriginalFilename());
         }
         return "users";
+    }
+
+    /**
+     * Activate User Account by validating verification code sent to email link
+     *
+     * @param model
+     * @param emailID
+     * @param enc encrypted verification code
+     * @return
+     */
+    @RequestMapping(value = "/activateaccount", method = RequestMethod.GET)
+    public String activateaccount(ModelMap model, @RequestParam("emailID") String emailID, @RequestParam("code") String enc) {
+        log.info("activateaccountclicked " + emailID);
+        String verifycode = util.decyptString(enc);
+        User user = service.findById(emailID);
+        if(user==null){
+            log.info("Invalid request");
+            model.addAttribute("message","Invalid request");
+            return "activateaccount";
+        }
+        if (!verifycode.equals(emailID)) {
+            log.info("Invalid link Please click on correct link..");
+            model.addAttribute("message", "Invalid link Please click on correct link..");
+            return "activateaccount";
+        }
+        if (user.getIsactive().equalsIgnoreCase("yes")) {
+            log.info("account alreay activated");
+            model.addAttribute("message", "Link is invalid account is already activated..");
+            return "activateaccount";
+        }
+        user.setIsactive("yes");
+        service.updateUser(user);
+        log.info("account successfully activated..");
+        model.addAttribute("message", "Account Succesfully activated you can login to your account");
+        return "activateaccount";
     }
 
     /**

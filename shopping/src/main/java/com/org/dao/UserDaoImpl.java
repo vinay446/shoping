@@ -24,6 +24,11 @@ public class UserDaoImpl implements UserDao {
     public User findById(String emailID) {
         return (User) getSession().get(User.class, emailID);
     }
+    
+    @Override
+    public User findById(int userID){
+        return (User) getSession().get(User.class, userID);
+    }
 
     @Override
     public void SaveUser(User user) {

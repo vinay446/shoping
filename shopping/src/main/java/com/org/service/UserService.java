@@ -15,6 +15,13 @@ public interface UserService {
     User findById(String emailID);
 
     /**
+     * Retrives User Obj from userID
+     * @param UserID
+     * @return 
+     */
+    User findById(int UserID);
+
+    /**
      * Saves given obj to database
      *
      * @param user
@@ -43,9 +50,10 @@ public interface UserService {
     public void updateUser(User user);
 
     /**
-     *true if emailID not exists else returns false
+     * true if emailID not exists else returns false
+     *
      * @param emailID
-     * @return 
+     * @return
      */
     public boolean isUseremailIDUnique(String emailID);
 

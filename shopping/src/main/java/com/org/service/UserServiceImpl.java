@@ -20,6 +20,11 @@ public class UserServiceImpl implements UserService {
     public User findById(String emailID) {
         return userdao.findById(emailID);
     }
+    
+    @Override
+    public User findById(int UserID){
+        return userdao.findById(UserID);
+    }
 
     @Override
     public void SaveUser(User user) {
