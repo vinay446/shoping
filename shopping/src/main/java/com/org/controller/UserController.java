@@ -4,12 +4,13 @@ import com.org.model.User;
 import com.org.service.UserService;
 import com.org.util.DateUtil;
 import com.org.util.SendMail;
+import com.org.util.SessionUtil;
 import com.org.util.util;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  *
  */
 @Controller
+@Scope("request")
 public class UserController {
 
     private static Logger log = Logger.getLogger(UserController.class);
@@ -35,6 +37,9 @@ public class UserController {
 
     @Autowired
     UserService service;
+
+    @Autowired
+    SessionUtil sessionutil;
 
     /**
      * users profile page redirection...
@@ -48,40 +53,28 @@ public class UserController {
         model.addAttribute("method", "view");
         List<User> users = service.findallUsers();
         model.addAttribute("users", users);
-        //model.addAttribute("Permissions", permisssions);
         return "users";
     }
 
     /**
      * user profile edit page redirection
      *
-     * @param id
+     * @param emailID
      * @param model
      * @return
      */
-    @RequestMapping(value = "/edituser/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/edituser/{emailID}", method = RequestMethod.GET)
     public String edituser(@PathVariable String emailID, ModelMap model) {
         log.debug("Request for modification of user " + emailID);
         model.addAttribute("method", "edit");
-        if (emailID.equals("0")) {//sysadmin
-            log.info("loading sysadmin profile information...");
-            User user = new User();
-            user.setId(0);
-            user.setEmailID(sysadminemailid);
-            user.setAddress("address");
-            user.setPhone("0");
-            user.setFirstname("sysadmin");
-            user.setLastname("admin");
-            user.setRoleID("admin");
-            user.setIsactive("yes");
-            user.setImageid("sysadmin.png");
-            model.addAttribute("user", user);
-        } else {
-            log.info("loading " + emailID + " information...");
-            User user = service.findById(emailID);
-            model.addAttribute("user", user);
+        User user = service.findById(emailID);
+        if (emailID.equals(sysadminemailid) | emailID.equals("0") | user == null) {
+            model.addAttribute("method", "view");
+            model.addAttribute("type", "error");
+            model.addAttribute("message", "Invalid Request...");
+            return "users";
         }
-//        model.addAttribute("disabledfield", disabled);
+        model.addAttribute("user", user);
         return "users";
     }
 
@@ -89,7 +82,6 @@ public class UserController {
      * Edit User Profile
      *
      * @param model
-     * @param id
      * @param image
      * @param userID
      * @param emailID
@@ -101,17 +93,18 @@ public class UserController {
      * @param isactive
      * @return
      */
-    @RequestMapping(value = "/editprofile/{id}", method = RequestMethod.POST)
-    public String editprofile(ModelMap model, @PathVariable int id, @RequestParam("image") CommonsMultipartFile image,
+    @RequestMapping(value = "/editprofile", method = RequestMethod.POST)
+    public String editprofile(ModelMap model, @RequestParam("image") CommonsMultipartFile image,
             @RequestParam("userID") int userID, @RequestParam("emailID") String emailID, @RequestParam("phone") String phone,
             @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname, @RequestParam("address") String address,
             @RequestParam("roleID") String roleID, @RequestParam("isactive") String isactive) {
-        log.info("EDITING PROFILE " + id);
+        log.info("EDITING PROFILE " + emailID);
         model.addAttribute("method", "view");
         String message = null;
-        if (id == 0) {
-            //message = image == null ? "Nothing to update" : util.saveimageinfolder(image, "C:\\xampp\\htdocs\\images\\sysadmin.png") ? "Successfully updated" : "unable to update...";
-            message = "ERROR you cannot change sysadmin values";
+        User user = service.findById(emailID);
+        if (emailID.equals(sysadminemailid) | user == null) {
+            model.addAttribute("type", "error");
+            message = "ERROR Invalid request";
         }
         model.addAttribute("message", message);
         return "users";
@@ -126,9 +119,17 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String createuserpage(ModelMap model) {
         log.info("Create new user page redirection...");
-        model.addAttribute("method", "create");
-        model.addAttribute("userid", "auto generate");
-        return "users";
+        String user = sessionutil.getUsername();
+        if (user.equals("sysadmin")) {
+            model.addAttribute("method", "create");
+            model.addAttribute("userid", "auto generate");
+            return "users";
+        }else{
+            model.addAttribute("method","view");
+            model.addAttribute("type","error");
+            model.addAttribute("message","Error, You don't have permission to create user...");
+            return "users";
+        }
     }
 
     /**
@@ -238,12 +239,12 @@ public class UserController {
         return "activateaccount";
     }
 
-  
     /**
      * Delete user with respective ID
+     *
      * @param model
      * @param emailID
-     * @return 
+     * @return
      */
     @RequestMapping(value = "/delete/{emailID}", method = RequestMethod.GET)
     public String deleteuser(ModelMap model, @PathVariable String emailID) {

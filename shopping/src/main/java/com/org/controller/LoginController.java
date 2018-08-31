@@ -1,12 +1,14 @@
 package com.org.controller;
 
 import com.org.model.User;
+import com.org.model.UserPermissions;
+import com.org.service.UserPermissionsService;
 import com.org.service.UserService;
 import com.org.util.DateUtil;
+import com.org.util.SessionUtil;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.org.util.util;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 
 /**
  * Common Controller Class for admin and user login
@@ -25,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  */
 @Controller
+@Scope("request")//This annotation is used to inject session util class dependecies by spring controller
 public class LoginController {
 
     private static Logger log = Logger.getLogger(LoginController.class);
@@ -35,6 +40,12 @@ public class LoginController {
     @Autowired
     private HttpServletRequest request;
 
+    @Autowired
+    private SessionUtil sessionutil;
+
+    @Autowired
+    private UserPermissionsService permissionsservice;
+
     /**
      * Admin login details validation
      *
@@ -43,14 +54,13 @@ public class LoginController {
      * @param rememberme
      * @param reqpage
      * @param model
-     * @param session
      * @param response
      * @return
      */
     @RequestMapping(value = "/adminlogin", method = RequestMethod.POST)
     public String adminlogin(@RequestParam("emailID") String emailID, @RequestParam("password") String password,
             @RequestParam(value = "rememberme", required = false) String rememberme,
-            @RequestParam("reqpage") String reqpage, ModelMap model, HttpSession session,
+            @RequestParam("reqpage") String reqpage, ModelMap model,
             HttpServletResponse response) {
         log.debug("admin login validation..");
         String sysadminusername = util.getProperites("sysadmin.username");
@@ -63,11 +73,11 @@ public class LoginController {
         if (emailID.equals(sysadminusername)) {
             if (password.equals(sysadminpassword)) {
                 log.debug("Loggin in as sysadmin....");
-                session.setAttribute("username", "sysadmin");
-                session.setAttribute("emailID", emailID);
+                setsessionutility(emailID, "sysadmin", 0);
                 if (rememberme != null) {
                     savecookies(response, emailID, password);
                 }
+                model.addAttribute("sessionutil", sessionutil);
                 return "dashboard";
             } else {
                 log.warn("Sysadmin passsword verification failed..");
@@ -79,13 +89,17 @@ public class LoginController {
         if (user == null) {
             model.addAttribute("message", "Invalid UserID");
             return "adminlogin";
-        } else if (user.getIsactive().equalsIgnoreCase("no")) {
+        }
+        if (user.getIsactive().equalsIgnoreCase("no")) {
             model.addAttribute("message", "User ID is not activated..");
             return "adminlogin";
         }
+        if (!user.getRoleID().equalsIgnoreCase("admin")) {
+            model.addAttribute("message", "you are not an admin..");
+            return "adminlogin";
+        }
         if (user.getPassword().equals(password)) {
-            session.setAttribute("username", user.getFirstname());
-            session.setAttribute("emailID", emailID);
+            setsessionutility(emailID, user.getFirstname(), user.getId());
             if (rememberme != null) {
                 savecookies(response, emailID, password);
             }
@@ -96,6 +110,26 @@ public class LoginController {
             model.addAttribute("message", "Access Denied, Incorrect Password");
             return "adminlogin";
         }
+    }
+
+    /**
+     * get permissions for user and set sessionsutil class
+     *
+     * @param emailID
+     * @param username
+     * @param userID
+     */
+    private void setsessionutility(String emailID, String username, int userID) {
+        sessionutil.setEmailID(emailID);
+        sessionutil.setUsername(username);
+        HttpSession session = request.getSession();
+        session.setAttribute("username", username);
+        session.setAttribute("emailID", emailID);
+        if (userID == 0) {
+            return;
+        }
+        UserPermissions permissions = permissionsservice.getpermissionsforuser(userID);
+        sessionutil.setPermissions(permissions);
     }
 
     /**
@@ -121,14 +155,14 @@ public class LoginController {
      *
      * @param msg
      * @param req
-     * @param session
      * @param model
      * @return
      */
     @RequestMapping(value = "/adminlogout", method = RequestMethod.GET)
-    public String adminlogout(@RequestParam("msg") String msg, @RequestParam("req") String req, HttpSession session, ModelMap model) {
+    public String adminlogout(@RequestParam("msg") String msg, @RequestParam("req") String req, ModelMap model) {
         log.info("logout request");
-        session.invalidate();
+        request.getSession().invalidate();
+        sessionutil.invalidate();
         model.addAttribute("msg", msg);
         model.addAttribute("req", req);
         util.getadminlogincookies(model, request);
