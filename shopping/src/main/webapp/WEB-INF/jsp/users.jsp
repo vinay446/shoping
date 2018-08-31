@@ -284,8 +284,8 @@
                                                 <p class="card-content">Address: ${user.address}</p>
                                                 <p class="card-content">Role: ${user.roleID}</p>
                                                 <p class="card-content">Is Active: ${user.isactive}</p>
-                                                <a href="<c:url value="/edituser/${user.id}"/>"  class="btn btn-primary btn-round">Edit</a>                                                                                               
-                                                <a href="<c:url value="/delete/${user.id}"/>"   class="btn btn-primary btn-round">Delete</a>
+                                                <a href="<c:url value="/edituser/${user.emailID}"/>"  class="btn btn-primary btn-round">Edit</a>                                                                                               
+                                                <a href="<c:url value="/delete/${user.emailID}"/>"   class="btn btn-primary btn-round">Delete</a>
                                             </div>
                                         </div>
                                     </div>

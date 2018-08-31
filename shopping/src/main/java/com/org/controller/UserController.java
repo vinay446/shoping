@@ -31,6 +31,7 @@ public class UserController {
     private static Logger log = Logger.getLogger(UserController.class);
     private static final String sysadminemailid = util.getProperites("sysadmin.username");
     private static final String profileexpire = util.getProperites("profileexpiredays");
+    private static final String serverimageslocation = util.getProperites("serverimageslocation");
 
     @Autowired
     UserService service;
@@ -59,11 +60,10 @@ public class UserController {
      * @return
      */
     @RequestMapping(value = "/edituser/{id}", method = RequestMethod.GET)
-    public String edituser(@PathVariable int id, ModelMap model) {
-        log.debug("Request for modification of user " + id);
+    public String edituser(@PathVariable String emailID, ModelMap model) {
+        log.debug("Request for modification of user " + emailID);
         model.addAttribute("method", "edit");
-        List<Integer> disabled = getpermissions(id, "disabledfields");
-        if (id == 0) {//sysadmin
+        if (emailID.equals("0")) {//sysadmin
             log.info("loading sysadmin profile information...");
             User user = new User();
             user.setId(0);
@@ -77,11 +77,11 @@ public class UserController {
             user.setImageid("sysadmin.png");
             model.addAttribute("user", user);
         } else {
-            log.info("loading " + id + " information...");
-            User user = service.findById(id);
-            model.addAttribute("user",user);
+            log.info("loading " + emailID + " information...");
+            User user = service.findById(emailID);
+            model.addAttribute("user", user);
         }
-        model.addAttribute("disabledfield", disabled);
+//        model.addAttribute("disabledfield", disabled);
         return "users";
     }
 
@@ -197,8 +197,8 @@ public class UserController {
         String link = "localhost:8084/shopping/activateaccount?emailID=" + emailID + "&code=" + URLEncoder.encode(verifycode);
         SendMail se = new SendMail(emailID, "welocme@glovision.co", "WELCOME", firstname, link);
         se.start();
-        if (!image.equals("sysadmin.png")) {
-            util.saveimageinfolder(image, "/var/www/html/images/" + image.getOriginalFilename());
+        if (!imageid.equals("sysadmin.png")) {
+            util.saveimageinfolder(image, serverimageslocation + image.getOriginalFilename());
         }
         return "users";
     }
@@ -216,9 +216,9 @@ public class UserController {
         log.info("activateaccountclicked " + emailID);
         String verifycode = util.decyptString(enc);
         User user = service.findById(emailID);
-        if(user==null){
+        if (user == null) {
             log.info("Invalid request");
-            model.addAttribute("message","Invalid request");
+            model.addAttribute("message", "Invalid request");
             return "activateaccount";
         }
         if (!verifycode.equals(emailID)) {
@@ -238,31 +238,27 @@ public class UserController {
         return "activateaccount";
     }
 
+  
     /**
-     * *
-     * gets all permissions for user
-     *
-     * @param userid
-     * @param permission
-     * @return
+     * Delete user with respective ID
+     * @param model
+     * @param emailID
+     * @return 
      */
-    private List<Integer> getpermissions(int userid, String permission) {
-        //0 false 1 true
-        List<Integer> permissions = new ArrayList<Integer>();
-        if (userid == 0) {//sysadmin
-            //disabled (uneditable) fields for sysadmin user
-            if (permission.equals("disabledfields")) {
-                for (int i = 0; i < 9; i++) {
-                    //all fields editable permission disabled
-                    permissions.add(0);
-                }
-            } //user modification options for sysadmin user
-            else if (permission.equals("usermodifications")) {
-                permissions.add(1);//edit
-                permissions.add(1);//new
-                permissions.add(1);//delete
-            }
+    @RequestMapping(value = "/delete/{emailID}", method = RequestMethod.GET)
+    public String deleteuser(ModelMap model, @PathVariable String emailID) {
+        log.info("User requested delete user...");
+        model.addAttribute("method", "view");
+        User user = service.findById(emailID);
+        model.addAttribute("type", "error");
+        if (user == null) {
+            log.error("Unable to find requested  emailID..");
+            model.addAttribute("message", "Oops, Something went wrong. Unable to find User ");
+            return "users";
         }
-        return permissions;
+        log.warn("deleting userID... " + emailID);
+        service.deleteUser(user.getEmailID());
+        model.addAttribute("message", "User deleted successfully..");
+        return "users";
     }
 }
