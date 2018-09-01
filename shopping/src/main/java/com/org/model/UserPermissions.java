@@ -25,6 +25,9 @@ public class UserPermissions implements Serializable {
     @Column(name = "userID")
     private int userID;
 
+    @Column(name = "view")
+    private int view;
+
     @Column(name = "create")
     private int create;
 
@@ -34,12 +37,34 @@ public class UserPermissions implements Serializable {
     @Column(name = "delete")
     private int delete;
 
+    public void setallpermissions(boolean flag) {
+        if (flag) {
+            this.view = 1;
+            this.create = 1;
+            this.update = 1;
+            this.delete = 1;
+            return;
+        }
+        this.view = 0;
+        this.create = 0;
+        this.update = 0;
+        this.delete = 0;
+    }
+
     public int getUserID() {
         return userID;
     }
 
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    public int getView() {
+        return view;
+    }
+
+    public void setView(int view) {
+        this.view = view;
     }
 
     public int getCreate() {

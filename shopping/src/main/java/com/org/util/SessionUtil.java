@@ -32,6 +32,8 @@ public class SessionUtil {
     private String username;
 
     private String emailID;
+    
+    private int userID;
 
     private UserPermissions permissions;
 
@@ -39,6 +41,7 @@ public class SessionUtil {
         this.username = null;
         this.emailID = null;
         this.permissions = null;
+        this.userID = -1;
     }
 
     public String getUsername() {
@@ -64,4 +67,13 @@ public class SessionUtil {
     public void setPermissions(UserPermissions permissions) {
         this.permissions = permissions;
     }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+    
 }

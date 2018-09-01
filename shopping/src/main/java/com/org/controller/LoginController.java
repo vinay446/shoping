@@ -67,7 +67,7 @@ public class LoginController {
         String sysadminpassword = util.getProperites("sysadmin.password");
         if (sysadminusername == null | sysadminpassword == null) {
             log.fatal("Error in getting values from properties file ");
-            model.addAttribute("message", "Oops, Something went wrong, Try Again after sometime");
+            model.addAttribute("message", "Oops, Error in getting values from properties file");
             return "adminlogin";
         }
         if (emailID.equals(sysadminusername)) {
@@ -105,6 +105,8 @@ public class LoginController {
             }
             user.setLastlogin(DateUtil.getEpoch());
             user.setLastloginip(request.getRemoteAddr());
+            service.updateUser(user);
+            model.addAttribute("sessionutil", sessionutil);
             return "dashboard";
         } else {
             model.addAttribute("message", "Access Denied, Incorrect Password");
@@ -122,10 +124,14 @@ public class LoginController {
     private void setsessionutility(String emailID, String username, int userID) {
         sessionutil.setEmailID(emailID);
         sessionutil.setUsername(username);
+        sessionutil.setUserID(userID);
         HttpSession session = request.getSession();
         session.setAttribute("username", username);
         session.setAttribute("emailID", emailID);
         if (userID == 0) {
+            UserPermissions permissions = new UserPermissions();
+            permissions.setallpermissions(true);
+            sessionutil.setPermissions(permissions);
             return;
         }
         UserPermissions permissions = permissionsservice.getpermissionsforuser(userID);
@@ -165,6 +171,7 @@ public class LoginController {
         sessionutil.invalidate();
         model.addAttribute("msg", msg);
         model.addAttribute("req", req);
+        model.addAttribute("sessionutil", sessionutil);
         util.getadminlogincookies(model, request);
         return "adminlogin";
     }

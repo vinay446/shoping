@@ -32,10 +32,12 @@
                             class="material-icons">person</i>
                     </a>
                     <p class="hidden-lg hidden-md">Profile</p>
-                    <ul class="dropdown-menu">					
-                        <button class="btn btn-round btn-info" style="height: 100%; width: 100%;" onclick="location.href = '<c:url value="/create"/>'">
+                    <ul class="dropdown-menu">
+                        <c:if test="${sessionutil.getPermissions().getCreate()==1}">
+                              <button class="btn btn-round btn-info" style="height: 100%; width: 100%;" onclick="location.href = '<c:url value="/create"/>'">
                                 <i class="material-icons"> person </i>Create New User
-                        </button><br/>
+                            </button><br/>
+                        </c:if>
                         <button class="btn btn-round btn-danger" style="height: 100%; width: 100%;" onclick="location.href = '<c:url value="/adminlogout?msg=successfully loggedout&req="/>'">
                                 <i class="material-icons"> power_settings_new </i>Logout
                         </button>

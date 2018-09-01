@@ -47,24 +47,42 @@ function validatecreateuser() {
         displaynotification('top', 'right', 'Please Enter a valid phone number', 'danger');
         return false;
     }
-    var firstname = document.getElementById("firstname").value;    
+    var firstname = document.getElementById("firstname").value;
     var password = document.getElementById("password").value;
     var cpassword = document.getElementById("cpassword").value;
-    if(firstname===null| firstname===""| firstname===" "){
+    if (firstname === null | firstname === "" | firstname === " ") {
         displaynotification('top', 'right', 'First Name cannot be empty', 'danger');
         return false;
     }
-    if(password===null | password===""| password===" "){
+    if (password === null | password === "" | password === " ") {
         displaynotification('top', 'right', 'Password cannot be empty', 'danger');
         return false;
     }
-    if(password!==cpassword){
+    if (password !== cpassword) {
         displaynotification('top', 'right', 'Passwords not matching', 'danger');
         return false;
     }
     var image = document.getElementById("image").value;
-    if(image===null| image==="" | image===" "){
-        displaynotification("bottom","right","Image is not provided default image will be used..","info");
+    if (image === null | image === "" | image === " ") {
+        displaynotification("bottom", "right", "Image is not provided default image will be used..", "info");
     }
     return true;
+}
+
+/**
+ * displays popup accordong to message type
+ * @param {type} message
+ * @param {type} type
+ * @returns {undefined}
+ */
+function showpopup(message, type) {    
+    if (message !== null && message !== "" && message !== " " && message !== "null") {
+        if (type.toLowerCase() === "error") {
+            displaynotification("top", "right", message, "danger");
+        } else if (type.toLowerCase() === "info") {
+            displaynotification("bottom", "right", message, "info");
+        } else {
+            displaynotification("bottom", "right", message, "success");
+        }
+    }
 }

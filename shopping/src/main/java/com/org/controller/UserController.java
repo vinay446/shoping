@@ -50,10 +50,23 @@ public class UserController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String users(ModelMap model) {
         log.info("users profile page redirection...");
-        model.addAttribute("method", "view");
-        List<User> users = service.findallUsers();
-        model.addAttribute("users", users);
-        return "users";
+        String user = sessionutil.getEmailID();
+        model.addAttribute("sessionutil", sessionutil);
+        System.out.println("sessiontuil " + sessionutil.getPermissions().getView());
+        if (user == null) {
+            model.addAttribute("type", "error");
+            model.addAttribute("message", "Something went wrong...");
+            return "dashboard";
+        }
+        if (sessionutil.getPermissions().getView() == 1) {
+            model.addAttribute("method", "view");
+            List<User> users = service.findallUsers();
+            model.addAttribute("users", users);
+            return "users";
+        }
+        model.addAttribute("type", "error");
+        model.addAttribute("message", "You don't have permission to view users");
+        return "dashboard";
     }
 
     /**
@@ -67,6 +80,7 @@ public class UserController {
     public String edituser(@PathVariable String emailID, ModelMap model) {
         log.debug("Request for modification of user " + emailID);
         model.addAttribute("method", "edit");
+        model.addAttribute("sessionutil", sessionutil);
         User user = service.findById(emailID);
         if (emailID.equals(sysadminemailid) | emailID.equals("0") | user == null) {
             model.addAttribute("method", "view");
@@ -100,6 +114,7 @@ public class UserController {
             @RequestParam("roleID") String roleID, @RequestParam("isactive") String isactive) {
         log.info("EDITING PROFILE " + emailID);
         model.addAttribute("method", "view");
+        model.addAttribute("sessionutil", sessionutil);
         String message = null;
         User user = service.findById(emailID);
         if (emailID.equals(sysadminemailid) | user == null) {
@@ -119,17 +134,15 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String createuserpage(ModelMap model) {
         log.info("Create new user page redirection...");
-        String user = sessionutil.getUsername();
-        if (user.equals("sysadmin")) {
-            model.addAttribute("method", "create");
-            model.addAttribute("userid", "auto generate");
-            return "users";
-        }else{
-            model.addAttribute("method","view");
-            model.addAttribute("type","error");
-            model.addAttribute("message","Error, You don't have permission to create user...");
+        model.addAttribute("sessionutil", sessionutil);
+        if (sessionutil.getPermissions().getCreate() == 0) {
+            model.addAttribute("type", "error");
+            model.addAttribute("message", "Access Denied you don't have permission...");
             return "users";
         }
+        model.addAttribute("method", "create");
+        model.addAttribute("userid", "auto generate");
+        return "users";
     }
 
     /**
@@ -154,6 +167,12 @@ public class UserController {
             @RequestParam("roleID") String roleID, @RequestParam("isactive") String isactive) {
         log.info("Creating new user profile...");
         model.addAttribute("method", "view");
+        model.addAttribute("sessionutil", sessionutil);
+        if (sessionutil.getPermissions().getCreate() == 0) {
+            model.addAttribute("type", "error");
+            model.addAttribute("message", "Access Denied you don't have permission...");
+            return "users";
+        }
         if (!service.isUseremailIDUnique(emailID)) {
             log.error("EmailID already Exists");
             model.addAttribute("type", "error");
@@ -249,6 +268,7 @@ public class UserController {
     @RequestMapping(value = "/delete/{emailID}", method = RequestMethod.GET)
     public String deleteuser(ModelMap model, @PathVariable String emailID) {
         log.info("User requested delete user...");
+        model.addAttribute("sessionutil", sessionutil);
         model.addAttribute("method", "view");
         User user = service.findById(emailID);
         model.addAttribute("type", "error");
